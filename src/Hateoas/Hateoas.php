@@ -3,6 +3,7 @@
 namespace Hateoas;
 
 use Hateoas\Configuration\RelationsRepository;
+use Hateoas\Helper\LinkHelper;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -23,13 +24,19 @@ class Hateoas implements SerializerInterface
     private $relationsRepository;
 
     /**
+     * @var LinkHelper
+     */
+    private $linkHelper;
+
+    /**
      * @param SerializerInterface $serializer
      * @param RelationsRepository $RelationsRepository
      */
-    public function __construct(SerializerInterface $serializer, RelationsRepository $relationsRepository)
+    public function __construct(SerializerInterface $serializer, RelationsRepository $relationsRepository, LinkHelper $linkHelper)
     {
         $this->serializer          = $serializer;
         $this->relationsRepository = $relationsRepository;
+        $this->linkHelper          = $linkHelper;
     }
 
     /**
@@ -62,5 +69,19 @@ class Hateoas implements SerializerInterface
     public function getSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * Gets the 'href' value of an object's link, identified by its rel name.
+     *
+     * @param object  $object
+     * @param string  $rel
+     * @param boolean $absolute
+     *
+     * @return string|null
+     */
+    public function getLinkHref($object, $rel, $absolute = false)
+    {
+        return $this->linkHelper->getLinkHref($object, $rel, $absolute);
     }
 }
